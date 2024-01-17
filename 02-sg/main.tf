@@ -1,3 +1,14 @@
+#vpn
+module "vpn" {
+    source = "../../terraform-aws-security-group"
+    project_name = var.project_name
+    environment = var.environment
+    sg_description = "sg for vpn"
+    vpc_id = data.aws_vpc.default.id
+    sg_name = "vpn"
+    #sg_ingress_rules = var.mongodb_sg_ingress_rules
+}
+
 #mongodb
 module "mongodb" {
     source = "../../terraform-aws-security-group"
@@ -119,6 +130,26 @@ module "dispatch" {
     
 }
 
+
+#open vpn
+resource "aws_security_group_rule" "vpn_home" {
+  security_group_id = module.vpn.sg_id
+  type              = "ingress"
+  from_port         = 0
+  to_port           = 65535
+  protocol          = "-1"
+  cidr_blocks = ["0.0.0.0/0"] #ideally ypur home ip address,but it freqently changes
+}
+
+#mongodb-vpn
+resource "aws_security_group_rule" "mongodb_vpn" {
+  source_security_group_id = module.vpn.sg_id
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  security_group_id = module.mongodb.sg_id
+}
 
 #mongodb accepting connection  from catalogue instances
 resource "aws_security_group_rule" "mongodb_catalogue" {
