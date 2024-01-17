@@ -8,7 +8,7 @@ terraform {
 
   backend "s3" {
       bucket = "daws76-remote-state"
-      key    = "vpn-default"
+      key    = "default"
       region = "us-east-1"
       dynamodb_table = "daws76-locking"
 
@@ -19,3 +19,4 @@ terraform {
 provider "aws" {
   region = "us-east-1"
 }
+
