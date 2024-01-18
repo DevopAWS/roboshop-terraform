@@ -13,3 +13,8 @@ variable "environment" {
     default = "dev"
   
 }
+
+variable "zone_name" {
+  default = "daws76.online"
+  
+}
